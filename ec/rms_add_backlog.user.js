@@ -1,9 +1,9 @@
 // ==UserScript==
-// @name       monkey-vite-vue
+// @name       RMS add Backlog Issue
 // @namespace  npm/vite-plugin-monkey
 // @version    0.0.0
 // @author     monkey
-// @updateURL  https://github.com/alphace-kadono/userscript/raw/main/ec/add_backlog.user.js
+// @updateURL  https://github.com/alphace-kadono/userscript/raw/main/ec/rms_add_backlog.user.js
 // @match      https://order-rp.rms.rakuten.co.jp/order-rb/individual-order-detail-sc/*
 // @require    https://raw.github.com/odyniec/MonkeyConfig/master/monkeyconfig.js
 // @require    data:application/javascript,window.MonkeyConfig%3DMonkeyConfig
