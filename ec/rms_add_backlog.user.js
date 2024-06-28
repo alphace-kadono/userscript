@@ -1,24 +1,25 @@
 // ==UserScript==
-// @name       RMS add Backlog Issue
-// @namespace  npm/vite-plugin-monkey
-// @version    0.0.0
-// @author     monkey
-// @updateURL  https://github.com/alphace-kadono/userscript/raw/main/ec/rms_add_backlog.user.js
-// @match      https://order-rp.rms.rakuten.co.jp/order-rb/individual-order-detail-sc/*
-// @require    https://raw.github.com/odyniec/MonkeyConfig/master/monkeyconfig.js
-// @require    data:application/javascript,window.MonkeyConfig%3DMonkeyConfig
-// @require    https://cdn.jsdelivr.net/npm/vue@3.4.29/dist/vue.global.prod.js
-// @require    data:application/javascript,%3Bwindow.Vue%3DVue%3B
-// @require    https://cdn.jsdelivr.net/npm/element-plus@2.7.6/dist/index.full.min.js
-// @resource   element-plus/dist/index.css  https://cdn.jsdelivr.net/npm/element-plus@2.7.6/dist/index.css
-// @connect    script.google.com
-// @connect    script.googleusercontent.com
-// @grant      GM.xmlHttpRequest
-// @grant      GM_addStyle
-// @grant      GM_getResourceText
-// @grant      GM_getValue
-// @grant      GM_registerMenuCommand
-// @grant      GM_setValue
+// @name         RMS add Backlog Issue
+// @namespace    npm/vite-plugin-monkey
+// @version      0.0.0
+// @author       monkey
+// @description  RMS 受注データを Backlog の課題に追加する
+// @updateURL    https://github.com/alphace-kadono/userscript/raw/main/ec/rms_login.user.js
+// @match        https://order-rp.rms.rakuten.co.jp/order-rb/individual-order-detail-sc/*
+// @require      https://raw.github.com/odyniec/MonkeyConfig/master/monkeyconfig.js
+// @require      data:application/javascript,window.MonkeyConfig%3DMonkeyConfig
+// @require      https://cdn.jsdelivr.net/npm/vue@3.4.29/dist/vue.global.prod.js
+// @require      data:application/javascript,%3Bwindow.Vue%3DVue%3B
+// @require      https://cdn.jsdelivr.net/npm/element-plus@2.7.6/dist/index.full.min.js
+// @resource     element-plus/dist/index.css  https://cdn.jsdelivr.net/npm/element-plus@2.7.6/dist/index.css
+// @connect      script.google.com
+// @connect      script.googleusercontent.com
+// @grant        GM.xmlHttpRequest
+// @grant        GM_addStyle
+// @grant        GM_getResourceText
+// @grant        GM_getValue
+// @grant        GM_registerMenuCommand
+// @grant        GM_setValue
 // ==/UserScript==
 
 (t=>{if(typeof GM_addStyle=="function"){GM_addStyle(t);return}const e=document.createElement("style");e.textContent=t,document.head.append(e)})(" [data-v-f79a8fb5]{--el-color-danger: #ba0000;--el-color-danger-light-3: #dd2233;--defaultColorLink: #00836b;--backgroundColorHover: #fcfade}.el-loading-text{font-size:200%!important;font-weight:500!important}.el-input[data-v-f79a8fb5]{--el-input-border-color: var(--defaultColorLink)}.el-result[data-v-f79a8fb5]{--el-result-icon-font-size: 48px}.el-text--large[data-v-f79a8fb5]{--el-text-font-size: 2rem}.el-link[data-v-f79a8fb5]{--el-link-font-size: 2rem}.text-3xl[data-v-f79a8fb5]{font-size:1.875rem;line-height:2.25rem}.text-4xl[data-v-f79a8fb5]{font-size:2.25rem;line-height:2.5rem}.right-top[data-v-f79a8fb5]{position:fixed;top:100px;right:10px;z-index:1000}.right-top-container[data-v-f79a8fb5]{text-align:right;position:fixed;top:100px;right:10%;padding:2rem;background-color:#f0f0f0;border-radius:var(--el-border-radius-base);z-index:1001}.bl-summary[data-v-f79a8fb5]{min-width:60rem;margin:1rem 0} ");
