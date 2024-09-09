@@ -1,27 +1,29 @@
 // ==UserScript==
-// @name       monkey-vite-vue
-// @namespace  npm/vite-plugin-monkey
-// @version    0.0.0
-// @author     monkey
-// @updateURL  https://github.com/alphace-kadono/userscript/raw/main/ec/add_backlog.user.js
-// @match      https://order-rp.rms.rakuten.co.jp/order-rb/individual-order-detail-sc/*
-// @require    https://raw.github.com/odyniec/MonkeyConfig/master/monkeyconfig.js
-// @require    data:application/javascript,window.MonkeyConfig%3DMonkeyConfig
-// @require    https://cdn.jsdelivr.net/npm/vue@3.4.29/dist/vue.global.prod.js
-// @require    data:application/javascript,%3Bwindow.Vue%3DVue%3B
-// @require    https://cdn.jsdelivr.net/npm/element-plus@2.7.6/dist/index.full.min.js
-// @resource   element-plus/dist/index.css  https://cdn.jsdelivr.net/npm/element-plus@2.7.6/dist/index.css
-// @connect    script.google.com
-// @connect    script.googleusercontent.com
-// @grant      GM.xmlHttpRequest
-// @grant      GM_addStyle
-// @grant      GM_getResourceText
-// @grant      GM_getValue
-// @grant      GM_registerMenuCommand
-// @grant      GM_setValue
+// @name         add Backlog Issue
+// @namespace    npm/vite-plugin-monkey
+// @version      0.1.0
+// @author       monkey
+// @description  受注データを Backlog の課題に追加する
+// @updateURL    https://github.com/alphace-kadono/userscript/raw/main/ec/add_backlog.user.js
+// @match        https://order-rp.rms.rakuten.co.jp/order-rb/individual-order-detail-sc/*
+// @match        https://pro.store.yahoo.co.jp/pro.ec-furniture/order/manage/detail/*
+// @require      https://raw.github.com/odyniec/MonkeyConfig/master/monkeyconfig.js
+// @require      data:application/javascript,window.MonkeyConfig%3DMonkeyConfig
+// @require      https://cdn.jsdelivr.net/npm/vue@3.4.29/dist/vue.global.prod.js
+// @require      data:application/javascript,%3Bwindow.Vue%3DVue%3B
+// @require      https://cdn.jsdelivr.net/npm/element-plus@2.7.6/dist/index.full.min.js
+// @resource     element-plus/dist/index.css  https://cdn.jsdelivr.net/npm/element-plus@2.7.6/dist/index.css
+// @connect      script.google.com
+// @connect      script.googleusercontent.com
+// @grant        GM.xmlHttpRequest
+// @grant        GM_addStyle
+// @grant        GM_getResourceText
+// @grant        GM_getValue
+// @grant        GM_registerMenuCommand
+// @grant        GM_setValue
 // ==/UserScript==
 
-(t=>{if(typeof GM_addStyle=="function"){GM_addStyle(t);return}const e=document.createElement("style");e.textContent=t,document.head.append(e)})(" [data-v-f79a8fb5]{--el-color-danger: #ba0000;--el-color-danger-light-3: #dd2233;--defaultColorLink: #00836b;--backgroundColorHover: #fcfade}.el-loading-text{font-size:200%!important;font-weight:500!important}.el-input[data-v-f79a8fb5]{--el-input-border-color: var(--defaultColorLink)}.el-result[data-v-f79a8fb5]{--el-result-icon-font-size: 48px}.el-text--large[data-v-f79a8fb5]{--el-text-font-size: 2rem}.el-link[data-v-f79a8fb5]{--el-link-font-size: 2rem}.text-3xl[data-v-f79a8fb5]{font-size:1.875rem;line-height:2.25rem}.text-4xl[data-v-f79a8fb5]{font-size:2.25rem;line-height:2.5rem}.right-top[data-v-f79a8fb5]{position:fixed;top:100px;right:10px;z-index:1000}.right-top-container[data-v-f79a8fb5]{text-align:right;position:fixed;top:100px;right:10%;padding:2rem;background-color:#f0f0f0;border-radius:var(--el-border-radius-base);z-index:1001}.bl-summary[data-v-f79a8fb5]{min-width:60rem;margin:1rem 0} ");
+(e=>{if(typeof GM_addStyle=="function"){GM_addStyle(e);return}const t=document.createElement("style");t.textContent=e,document.head.append(t)})(" [data-v-2eb440c8]{--el-color-danger: #ba0000;--el-color-danger-light-3: #dd2233;--defaultColorLink: #00836b;--backgroundColorHover: #fcfade}.el-loading-text{font-size:200%!important;font-weight:500!important}.el-result__subtitle p{color:#d23;font-size:140%!important}.el-input[data-v-2eb440c8]{--el-input-border-color: var(--defaultColorLink)}.el-result[data-v-2eb440c8]{--el-result-icon-font-size: 48px}.el-text--large[data-v-2eb440c8]{--el-text-font-size: 2rem}.el-link[data-v-2eb440c8]{--el-link-font-size: 2rem}.text-3xl[data-v-2eb440c8]{font-size:1.875rem;line-height:2.25rem}.text-4xl[data-v-2eb440c8]{font-size:2.25rem;line-height:2.5rem}.right-top[data-v-2eb440c8]{position:fixed;top:100px;right:10px;z-index:1000}.right-top-container[data-v-2eb440c8]{width:70%;text-align:right;position:fixed;top:100px;right:10%;padding:2rem;background-color:#f0f0f0;border-radius:var(--el-border-radius-base);z-index:1001}.bl-summary[data-v-2eb440c8]{min-width:90%;margin:1rem 0} ");
 
 (function (vue, ElementPlus) {
   'use strict';
@@ -78,6 +80,11 @@
       "gas-url": {
         type: "text",
         label: "GAS の URL"
+      },
+      force: {
+        type: "checkbox",
+        label: "すでに登録されている場合でも、無視して進める。",
+        default: false
       }
     }
     // onSave: (_: any) =>
@@ -101,8 +108,7 @@
     }
     return xnodes;
   };
-  const getOrder = async () => {
-    const type = "rakuten";
+  const getOrder = async (type = "rakuten") => {
     const selectors = {
       /* 楽天 RMS */
       rakuten: {
@@ -166,7 +172,7 @@
         const replace = item.html().replace(/<br[\s/]*>/gi, " ");
         item.html(replace);
       }
-      value = item.text() || item.val();
+      value = (item == null ? void 0 : item.text()) ?? (item == null ? void 0 : item.val()) ?? "";
       if (key.indexOf("URL") !== -1) {
         value = item.attr("href");
       }
@@ -181,10 +187,7 @@
     values["名前フリガナ"] = values["名前"] + "[" + values["フリガナ"] + "]様";
     values["注文者名前フリガナ"] = values["注文者名前"] + "[" + values["注文者フリガナ"] + "]様";
     if (values["クーポン利用"] !== void 0) {
-      values["クーポン利用"] = values["クーポン利用"].replace(
-        /\s{2,}/gm,
-        " "
-      );
+      values["クーポン利用"] = values["クーポン利用"].replace(/\s{2,}/gm, " ");
     }
     if (values["クーポン原資"] !== void 0) {
       values["クーポン利用"] = values["クーポン利用"] + " " + values["クーポン原資"];
@@ -224,6 +227,11 @@
     setup(__props) {
       const menuVisible = vue.ref(false);
       const toggleMenu = async () => {
+        const ecType = detectEcType();
+        if (!ecType) {
+          alert("このサイトでは使用できません。");
+          return;
+        }
         menuVisible.value = !menuVisible.value;
       };
       const menuModel = vue.computed(
@@ -241,13 +249,28 @@
           }
         }
       );
-      const postData = vue.ref({ api_key: "", summary: "", order_data: {} });
+      const detectEcType = () => {
+        if (window.location.href.includes("rakuten.co.jp/")) {
+          return "rakuten";
+        }
+        if (window.location.href.includes("yahoo.co.jp/")) {
+          return "yahoo";
+        }
+      };
+      const postData = vue.ref({
+        api_key: "",
+        summary: "",
+        force: false,
+        order_data: {},
+        is_development: false
+      });
       vue.watch(
         menuVisible,
         async (newValue, _) => {
           var _a;
           if (newValue === true) {
-            const orderData = await getOrder();
+            const ecType = detectEcType();
+            const orderData = await getOrder(ecType);
             const _productName = ((_a = orderData["商品"].split("\\n")) == null ? void 0 : _a.at(0)) ?? "";
             const productName = _productName.replace(/(【.*】)/, "") ?? "";
             postData.value.summary = `${orderData["ショップ"]}／${orderData["名前"]}[${orderData["フリガナ"]}]様／${productName}`;
@@ -274,7 +297,7 @@
         isOk: true,
         isError: false,
         icon: "error",
-        title: "",
+        sub_title: "「ひとことメモ」を更新したので、反映してください",
         issueUrl: "",
         message: "エラーが発生しました🙉"
       });
@@ -293,6 +316,9 @@
           mConfig.open("layer");
           return;
         }
+        if (postData.value.is_development === true) {
+          alert(JSON.stringify({ is_development: postData.value.is_development }));
+        }
         if (!confirm("🐵 よろしいですか？")) {
           return;
         }
@@ -304,15 +330,16 @@
         });
         try {
           postResponse.value.done = false;
-          const url = mConfig.get("gas-url");
           postData.value.api_key = mConfig.get("api-key");
+          postData.value.force = mConfig.get("force");
           console.log("postData.value");
           console.log(postData.value);
-          const _response = await makeRequest(url, postData.value);
+          const _response = await makeRequest(mConfig.get("gas-url"), postData.value);
           const response = JSON.parse(_response);
           postResponse.value.isOk = response.ok;
           if (response.ok) {
             postResponse.value.issueUrl = response.content.issueUrl;
+            postResponse.value.sub_title = "";
           } else {
             postResponse.value.message = response.message;
           }
@@ -374,8 +401,9 @@
               postResponse.value.isOk ? (vue.openBlock(), vue.createBlock(vue.unref(ElementPlus.ElResult), {
                 key: 0,
                 icon: "success",
-                title: "作成されました🐵"
-              })) : vue.createCommentVNode("", true),
+                title: "作成されました🐵",
+                "sub-title": postResponse.value.sub_title
+              }, null, 8, ["sub-title"])) : vue.createCommentVNode("", true),
               postResponse.value.isError ? (vue.openBlock(), vue.createBlock(vue.unref(ElementPlus.ElResult), {
                 key: 1,
                 icon: "error",
@@ -413,7 +441,7 @@
     }
     return target;
   };
-  const Backlog = /* @__PURE__ */ _export_sfc(_sfc_main, [["__scopeId", "data-v-f79a8fb5"]]);
+  const Backlog = /* @__PURE__ */ _export_sfc(_sfc_main, [["__scopeId", "data-v-2eb440c8"]]);
   const mountPoint = document.createElement("div");
   document.body.appendChild(mountPoint);
   const app = vue.createApp(Backlog);
